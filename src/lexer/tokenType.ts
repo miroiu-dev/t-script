@@ -1,3 +1,5 @@
-enum TokenType {}
+enum TokenType {
+  T,
+}
 
 export { TokenType };

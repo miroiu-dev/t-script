@@ -1,9 +1,9 @@
-import { isNewLine } from "./helpers";
+import { isNewLine } from './helpers';
 
 class InputStream {
-  public line: number = 1;
-  public column: number = 0;
-  private position: number = 0;
+  public line = 1;
+  public column = 0;
+  private position = 0;
 
   /**
    * @param text the input text to be processed
