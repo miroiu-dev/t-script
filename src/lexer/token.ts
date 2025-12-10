@@ -2,12 +2,12 @@ import { TokenType } from './tokenType';
 
 class Token {
   constructor(
+    public type: TokenType,
+    public text: string | null,
+    public literal: unknown,
     public line: number,
     public column: number,
-    public length: number,
-    public type: TokenType,
-    public literal: unknown,
-    public text: string
+    public length: number
   ) {}
 }
 
