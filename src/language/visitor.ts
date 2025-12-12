@@ -1,4 +1,4 @@
-import * as Expression from './expressions';
+import * as Expression from './parser/expressions';
 
 interface Visitor<T> {
   visitBinaryExpression(expression: Expression.Binary): T;

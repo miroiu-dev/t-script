@@ -1,6 +1,6 @@
-import type { Token } from '@t-script/lexer';
+import type { Token } from '@t-script/language/lexer';
 import { Expression } from './expression';
-import type { Visitor } from '../visitor';
+import type { Visitor } from '../../visitor';
 
 class Binary extends Expression {
   constructor(

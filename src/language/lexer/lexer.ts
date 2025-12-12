@@ -23,6 +23,10 @@ class Lexer {
     this.source = new InputStream(source);
   }
 
+  /**
+   * Lexes the input source code and returns an array of tokens.
+   * @return {Token[]} An array of tokens representing the lexed source code.
+   */
   public lex(): Token[] {
     while (!this.source.eof()) {
       this.start = this.source.position;
@@ -141,21 +145,6 @@ class Lexer {
       case '"': {
         const stringLiteral = this.consumeString();
         this.addToken(TokenType.STRING, stringLiteral);
-
-        break;
-      }
-      case '0':
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9': {
-        const numberLiteral = this.consumeNumber();
-        this.addToken(TokenType.NUMBER, numberLiteral);
 
         break;
       }
@@ -291,8 +280,6 @@ class Lexer {
   }
 
   private consumeNumber(): number {
-    this.source.next();
-
     while (isDigit(this.source.peek())) {
       this.source.next();
     }

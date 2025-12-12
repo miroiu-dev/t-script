@@ -1,5 +1,5 @@
 import type * as Expression from './expressions';
-import type { Visitor } from './visitor';
+import type { Visitor } from '../visitor';
 
 class AstPrinter implements Visitor<string> {
   print(expression: Expression.Expr): string {

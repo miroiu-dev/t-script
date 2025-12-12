@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { Lexer, LexerError, TokenType } from '@t-script/lexer';
+import { Lexer, LexerError, TokenType } from '@t-script/language/lexer';
 
 describe('Lexer', () => {
   test('should handle white space characters', () => {
@@ -154,5 +154,22 @@ describe('Lexer', () => {
     expect(tokens[2]?.type).toBe(TokenType.EQUAL);
     expect(tokens[3]?.type).toBe(TokenType.NUMBER);
     expect(tokens[3]?.literal).toBe(10);
+  });
+
+  test('should handle grouped expressions', () => {
+    const lexer = new Lexer('(2 + 3) * 4');
+    const tokens = lexer.lex();
+
+    expect(tokens).toHaveLength(8);
+    expect(tokens[0]?.type).toBe(TokenType.LEFT_PAREN);
+    expect(tokens[1]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[1]?.literal).toBe(2);
+    expect(tokens[2]?.type).toBe(TokenType.PLUS);
+    expect(tokens[3]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[3]?.literal).toBe(3);
+    expect(tokens[4]?.type).toBe(TokenType.RIGHT_PAREN);
+    expect(tokens[5]?.type).toBe(TokenType.STAR);
+    expect(tokens[6]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[6]?.literal).toBe(4);
   });
 });

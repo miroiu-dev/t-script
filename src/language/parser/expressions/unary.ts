@@ -1,6 +1,6 @@
 import { Expression } from './expression';
-import type { Token } from '@t-script/lexer';
-import type { Visitor } from '../visitor';
+import type { Token } from '@t-script/language/lexer';
+import type { Visitor } from '../../visitor';
 
 class Unary extends Expression {
   constructor(
