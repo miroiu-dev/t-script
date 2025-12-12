@@ -1,12 +1,27 @@
-import type * as Expression from './expressions';
+import {
+  Binary,
+  Expression,
+  Grouping,
+  Literal,
+  Ternary,
+  Unary,
+} from './expressions';
 import type { Visitor } from '../visitor';
 
 class AstPrinter implements Visitor<string> {
-  print(expression: Expression.Expr): string {
+  visitTernaryExpression(expression: Ternary): string {
+    return this.parenthesize(
+      '?:',
+      expression.condition,
+      expression.thenBranch,
+      expression.elseBranch
+    );
+  }
+  print(expression: Expression): string {
     return expression.accept(this);
   }
 
-  visitBinaryExpression(expression: Expression.Binary): string {
+  visitBinaryExpression(expression: Binary): string {
     return this.parenthesize(
       expression.operator.text,
       expression.left,
@@ -14,11 +29,11 @@ class AstPrinter implements Visitor<string> {
     );
   }
 
-  visitGroupingExpression(expression: Expression.Grouping): string {
+  visitGroupingExpression(expression: Grouping): string {
     return this.parenthesize('group', expression.expression);
   }
 
-  visitLiteralExpression(expression: Expression.Literal): string {
+  visitLiteralExpression(expression: Literal): string {
     if (expression.value === null || expression.value === undefined) {
       return 'null';
     }
@@ -26,14 +41,11 @@ class AstPrinter implements Visitor<string> {
     return expression.value.toString();
   }
 
-  visitUnaryExpression(expression: Expression.Unary): string {
+  visitUnaryExpression(expression: Unary): string {
     return this.parenthesize(expression.operator.text, expression.right);
   }
 
-  private parenthesize(
-    name: string,
-    ...expressions: Expression.Expr[]
-  ): string {
+  private parenthesize(name: string, ...expressions: Expression[]): string {
     let log = `(${name}`;
 
     for (const expr of expressions) {

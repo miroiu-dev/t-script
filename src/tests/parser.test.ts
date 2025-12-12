@@ -239,4 +239,33 @@ describe('parser', () => {
       expect(printResult).toBe(expected);
     });
   });
+
+  test('should handle ternary operator', () => {
+    const lexer = new Lexer('1 == 2 ? true : false');
+    const tokens = lexer.lex();
+    const parser = new Parser(tokens);
+
+    const ast = parser.parse();
+    expect(ast).toBeTruthy();
+    if (!ast) return;
+
+    const astPrinter = new AstPrinter();
+    const printResult = astPrinter.print(ast);
+    expect(printResult).toBe('(?: (== 1 2) true false)');
+  });
+
+  test('should handle nested ternary operators', () => {
+    const lexer = new Lexer('1 == 2 ? true : 3 == 4 ? false : null');
+    const tokens = lexer.lex();
+    const parser = new Parser(tokens);
+
+    const ast = parser.parse();
+    expect(ast).toBeTruthy();
+
+    if (!ast) return;
+
+    const astPrinter = new AstPrinter();
+    const printResult = astPrinter.print(ast);
+    expect(printResult).toBe('(?: (== 1 2) true (?: (== 3 4) false null))');
+  });
 });

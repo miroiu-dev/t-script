@@ -143,7 +143,7 @@ describe('Lexer', () => {
     expect(tokens[0]?.literal).toBe(123.45);
   });
 
-  test('should handle identifiers and keywords', () => {
+  test('should tokenize identifiers and keywords', () => {
     const lexer = new Lexer('const myVar = 10;');
     const tokens = lexer.lex();
 
@@ -156,7 +156,7 @@ describe('Lexer', () => {
     expect(tokens[3]?.literal).toBe(10);
   });
 
-  test('should handle grouped expressions', () => {
+  test('should tokenize grouped expressions', () => {
     const lexer = new Lexer('(2 + 3) * 4');
     const tokens = lexer.lex();
 
@@ -171,5 +171,20 @@ describe('Lexer', () => {
     expect(tokens[5]?.type).toBe(TokenType.STAR);
     expect(tokens[6]?.type).toBe(TokenType.NUMBER);
     expect(tokens[6]?.literal).toBe(4);
+  });
+
+  test('should handle ternary operator expression', () => {
+    const lexer = new Lexer('a ? b : c');
+    const tokens = lexer.lex();
+
+    expect(tokens).toHaveLength(6);
+    expect(tokens[0]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[0]?.text).toBe('a');
+    expect(tokens[1]?.type).toBe(TokenType.QUESTION_MARK);
+    expect(tokens[2]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[2]?.text).toBe('b');
+    expect(tokens[3]?.type).toBe(TokenType.COLON);
+    expect(tokens[4]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[4]?.text).toBe('c');
   });
 });

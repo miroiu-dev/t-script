@@ -72,8 +72,14 @@ class Lexer {
       case ';':
         this.addToken(TokenType.SEMICOLON);
         break;
+      case ':':
+        this.addToken(TokenType.COLON);
+        break;
       case '.':
         this.addToken(TokenType.DOT);
+        break;
+      case '?':
+        this.addToken(TokenType.QUESTION_MARK);
         break;
       case ',':
         this.addToken(TokenType.COMMA);

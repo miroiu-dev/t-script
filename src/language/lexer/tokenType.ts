@@ -12,6 +12,8 @@ enum TokenType {
   MINUS,
   SLASH,
   SEMICOLON,
+  COLON,
+  QUESTION_MARK,
   EOF,
   BANG,
   BANG_EQUAL,
