@@ -103,40 +103,40 @@ class Lexer {
         break;
       }
       case '!': {
-        const matchedEquals = this.source.match('=');
-        this.addToken(matchedEquals ? TokenType.BANG_EQUAL : TokenType.BANG);
+        const matchesEquals = this.source.match('=');
+        this.addToken(matchesEquals ? TokenType.BANG_EQUAL : TokenType.BANG);
 
         break;
       }
       case '>': {
-        const matchedEquals = this.source.match('=');
+        const matchesEquals = this.source.match('=');
         this.addToken(
-          matchedEquals ? TokenType.GREATER_EQUAL : TokenType.GREATER
+          matchesEquals ? TokenType.GREATER_EQUAL : TokenType.GREATER
         );
 
         break;
       }
       case '<': {
-        const matchedEquals = this.source.match('=');
-        this.addToken(matchedEquals ? TokenType.LESS_EQUAL : TokenType.LESS);
+        const matchesEquals = this.source.match('=');
+        this.addToken(matchesEquals ? TokenType.LESS_EQUAL : TokenType.LESS);
 
         break;
       }
       case '=': {
-        const matchedEquals = this.source.match('=');
-        this.addToken(matchedEquals ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+        const matchesEquals = this.source.match('=');
+        this.addToken(matchesEquals ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
 
         break;
       }
       case '&': {
-        const matchedEquals = this.source.match('&');
-        this.addToken(matchedEquals ? TokenType.AND : TokenType.BITWISE_AND);
+        const matchesAmpersand = this.source.match('&');
+        this.addToken(matchesAmpersand ? TokenType.AND : TokenType.AMPERSAND);
 
         break;
       }
       case '|': {
-        const matchedEquals = this.source.match('|');
-        this.addToken(matchedEquals ? TokenType.OR : TokenType.BITWISE_OR);
+        const matchesPipe = this.source.match('|');
+        this.addToken(matchesPipe ? TokenType.OR : TokenType.PIPE);
 
         break;
       }

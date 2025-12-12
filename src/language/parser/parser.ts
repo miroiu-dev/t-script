@@ -45,9 +45,22 @@ class Parser {
   }
 
   private equality(): Expression {
-    let expression = this.comparison();
+    let expression = this.bitwise();
 
     while (this.match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
+      const operator = this.previous();
+      const right = this.bitwise();
+
+      expression = new Binary(expression, operator, right);
+    }
+
+    return expression;
+  }
+
+  private bitwise(): Expression {
+    let expression = this.comparison();
+
+    while (this.match(TokenType.AMPERSAND, TokenType.PIPE)) {
       const operator = this.previous();
       const right = this.comparison();
 

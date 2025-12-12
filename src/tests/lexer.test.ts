@@ -187,4 +187,58 @@ describe('Lexer', () => {
     expect(tokens[4]?.type).toBe(TokenType.IDENTIFIER);
     expect(tokens[4]?.text).toBe('c');
   });
+
+  test('should tokenize bitwise operators correctly', () => {
+    const lexer = new Lexer('5 & 3 | 2');
+    const tokens = lexer.lex();
+
+    expect(tokens).toHaveLength(6);
+    expect(tokens[0]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[0]?.literal).toBe(5);
+    expect(tokens[1]?.type).toBe(TokenType.AMPERSAND);
+    expect(tokens[2]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[2]?.literal).toBe(3);
+    expect(tokens[3]?.type).toBe(TokenType.PIPE);
+    expect(tokens[4]?.type).toBe(TokenType.NUMBER);
+    expect(tokens[4]?.literal).toBe(2);
+    expect(tokens[5]?.type).toBe(TokenType.EOF);
+  });
+
+  test('should tokenize mixed bitwise and comparison operators', () => {
+    const lexer = new Lexer('a == b & c');
+    const tokens = lexer.lex();
+
+    expect(tokens).toHaveLength(6);
+    expect(tokens[0]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[0]?.text).toBe('a');
+    expect(tokens[1]?.type).toBe(TokenType.EQUAL_EQUAL);
+    expect(tokens[2]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[2]?.text).toBe('b');
+    expect(tokens[3]?.type).toBe(TokenType.AMPERSAND);
+    expect(tokens[4]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[4]?.text).toBe('c');
+    expect(tokens[5]?.type).toBe(TokenType.EOF);
+  });
+
+  test('should tokenize complex expression with bitwise operators', () => {
+    const lexer = new Lexer('x < y & z | w > v');
+    const tokens = lexer.lex();
+
+    expect(tokens).toHaveLength(10);
+    expect(tokens[0]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[0]?.text).toBe('x');
+    expect(tokens[1]?.type).toBe(TokenType.LESS);
+    expect(tokens[2]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[2]?.text).toBe('y');
+    expect(tokens[3]?.type).toBe(TokenType.AMPERSAND);
+    expect(tokens[4]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[4]?.text).toBe('z');
+    expect(tokens[5]?.type).toBe(TokenType.PIPE);
+    expect(tokens[6]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[6]?.text).toBe('w');
+    expect(tokens[7]?.type).toBe(TokenType.GREATER);
+    expect(tokens[8]?.type).toBe(TokenType.IDENTIFIER);
+    expect(tokens[8]?.text).toBe('v');
+    expect(tokens[9]?.type).toBe(TokenType.EOF);
+  });
 });
