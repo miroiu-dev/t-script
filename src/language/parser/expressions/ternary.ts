@@ -1,4 +1,5 @@
-import type { ExpressionVisitor } from '@t-script/language/visitors/expressionVisitor';
+import type { ExpressionVisitor } from '@t-script/visitors';
+
 import { Expression } from './expression';
 
 class Ternary extends Expression {

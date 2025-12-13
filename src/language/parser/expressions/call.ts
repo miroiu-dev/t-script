@@ -3,17 +3,18 @@ import type { ExpressionVisitor } from '@t-script/visitors';
 
 import { Expression } from './expression';
 
-class Unary extends Expression {
+class Call extends Expression {
   constructor(
-    public operator: Token,
-    public right: Expression
+    public calle: Expression,
+    public paren: Token,
+    public args: Expression[]
   ) {
     super();
   }
 
   override accept<T>(visitor: ExpressionVisitor<T>): T {
-    return visitor.visitUnaryExpression(this);
+    return visitor.visitCallExpression(this);
   }
 }
 
-export { Unary };
+export { Call };

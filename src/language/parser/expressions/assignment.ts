@@ -1,4 +1,4 @@
-import type { ExpressionVisitor } from '@t-script/language/visitors';
+import type { ExpressionVisitor } from '@t-script/visitors';
 import type { Token } from '@t-script/language/lexer';
 
 import { Expression } from './expression';

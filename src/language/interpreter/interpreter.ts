@@ -1,36 +1,35 @@
+import type { ExpressionVisitor, StatementVisitor } from '@t-script/visitors';
+import type { Callable } from './callable';
+
 import { Token, TokenType } from '@t-script/language/lexer';
-import type {
-  Binary,
-  Grouping,
-  Literal,
-  Unary,
-  Ternary,
-  Expression,
-  Variable,
-  Assignment,
-  Logical,
-} from '@t-script/language/parser/expressions';
-import type {
-  ExpressionVisitor,
-  StatementVisitor,
-} from '@t-script/language/visitors';
-import type {
-  Block,
-  ExpressionStatement,
-  If,
-  Statement,
-  Var,
-  While,
-} from '@t-script/language/parser/statements';
-import { RuntimeError } from './errors';
+import { RuntimeError, Return } from './errors';
 import { Environment } from './environment';
+import { TScriptFunction } from './function';
+
+import * as Stmt from '@t-script/statements';
+import * as Expr from '@t-script/expressions';
 
 class Interpreter
   implements ExpressionVisitor<unknown>, StatementVisitor<void>
 {
-  private environment = new Environment();
+  public globals = new Environment();
+  private environment = this.globals;
 
-  public interpret(statements: Statement[]): void {
+  constructor() {
+    this.globals.define('clock', {
+      arity(): number {
+        return 0;
+      },
+      call(): number {
+        return Date.now() / 1000;
+      },
+      toString(): string {
+        return '<native fn>';
+      },
+    });
+  }
+
+  public interpret(statements: Stmt.Statement[]): void {
     try {
       for (const statement of statements) {
         this.execute(statement);
@@ -42,22 +41,22 @@ class Interpreter
     }
   }
 
-  public visitExpressionStatement(statement: ExpressionStatement): void {
+  public visitExpressionStatement(statement: Stmt.Expression): void {
     this.evaluate(statement.expression);
   }
 
-  public visitVariableExpression(expression: Variable): unknown {
+  public visitVariableExpression(expression: Expr.Variable): unknown {
     return this.environment.get(expression.name);
   }
 
-  public visitAssignmentExpression(expression: Assignment): unknown {
+  public visitAssignmentExpression(expression: Expr.Assignment): unknown {
     const value = this.evaluate(expression.value);
     this.environment.assign(expression.name, value);
 
     return value;
   }
 
-  public visitVarStatement(statement: Var): void {
+  public visitVarStatement(statement: Stmt.Var): void {
     let value: unknown = null;
 
     if (statement.initializer !== null) {
@@ -67,7 +66,7 @@ class Interpreter
     this.environment.define(statement.name.text, value);
   }
 
-  public visitIfStatement(statement: If): void {
+  public visitIfStatement(statement: Stmt.If): void {
     const condition = this.evaluate(statement.condition);
 
     if (this.isTruthy(condition)) {
@@ -77,12 +76,12 @@ class Interpreter
     }
   }
 
-  public visitBlockStatement(statement: Block): void {
+  public visitBlockStatement(statement: Stmt.Block): void {
     this.executeBlock(statement.statements, new Environment(this.environment));
   }
 
-  private executeBlock(
-    statements: Statement[],
+  public executeBlock(
+    statements: Stmt.Statement[],
     environment: Environment
   ): void {
     const previous = this.environment;
@@ -98,7 +97,39 @@ class Interpreter
     }
   }
 
-  public visitLogicalExpression(expression: Logical): unknown {
+  public visitCallExpression(expression: Expr.Call): unknown {
+    const calle = this.evaluate(expression.calle);
+    const args = expression.args.map(arg => this.evaluate(arg));
+    const func = calle as Callable;
+
+    if (args.length !== func.arity()) {
+      throw new RuntimeError(
+        expression.paren,
+        `Expected ${func.arity()} arguments but got ${args.length}.`
+      );
+    }
+
+    if (!(calle instanceof Callable)) {
+      throw new RuntimeError(
+        expression.paren,
+        'Can only call functions and classes.'
+      );
+    }
+
+    return func.call(this, args);
+  }
+
+  public visitReturnStatement(statement: Stmt.Return): void {
+    let value: unknown = null;
+
+    if (statement.value !== null) {
+      value = this.evaluate(statement.value);
+    }
+
+    throw new Return(value);
+  }
+
+  public visitLogicalExpression(expression: Expr.Logical): unknown {
     const left = this.evaluate(expression.left);
 
     if (expression.operator.type === TokenType.OR) {
@@ -110,13 +141,19 @@ class Interpreter
     return this.evaluate(expression.right);
   }
 
-  public visitWhileStatement(statement: While): void {
+  public visitWhileStatement(statement: Stmt.While): void {
     while (this.isTruthy(this.evaluate(statement.condition))) {
       this.execute(statement.body);
     }
   }
 
-  public visitBinaryExpression(expression: Binary): unknown {
+  public visitFunctionStatement(statement: Stmt.Func): void {
+    const func = new TScriptFunction(statement);
+
+    this.environment.define(statement.name.text, func);
+  }
+
+  public visitBinaryExpression(expression: Expr.Binary): unknown {
     const left = this.evaluate(expression.left);
     const right = this.evaluate(expression.right);
 
@@ -171,15 +208,15 @@ class Interpreter
     return null;
   }
 
-  public visitGroupingExpression(expression: Grouping): unknown {
+  public visitGroupingExpression(expression: Expr.Grouping): unknown {
     return this.evaluate(expression.expression);
   }
 
-  public visitLiteralExpression(expression: Literal): unknown {
+  public visitLiteralExpression(expression: Expr.Literal): unknown {
     return expression.value;
   }
 
-  public visitUnaryExpression(expression: Unary): unknown {
+  public visitUnaryExpression(expression: Expr.Unary): unknown {
     const right = this.evaluate(expression.right);
 
     switch (expression.operator.type) {
@@ -193,7 +230,7 @@ class Interpreter
     return null;
   }
 
-  public visitTernaryExpression(expression: Ternary): unknown {
+  public visitTernaryExpression(expression: Expr.Ternary): unknown {
     const condition = this.evaluate(expression.condition);
 
     if (this.isTruthy(condition)) {
@@ -203,11 +240,11 @@ class Interpreter
     }
   }
 
-  private evaluate(expression: Expression): unknown {
+  private evaluate(expression: Expr.Expression): unknown {
     return expression.accept(this);
   }
 
-  private execute(statement: Statement): unknown {
+  private execute(statement: Stmt.Statement): unknown {
     return statement.accept(this);
   }
 

@@ -1,20 +1,20 @@
 import type { StatementVisitor } from '@t-script/visitors';
 import type { Token } from '@t-script/lexer';
-import type { Expression } from '@t-script/expressions';
 
 import { Statement } from './statement';
 
-class Var extends Statement {
+class Func extends Statement {
   constructor(
     public name: Token,
-    public initializer: Expression | null
+    public params: Token[],
+    public body: Statement[]
   ) {
     super();
   }
 
   override accept<T>(visitor: StatementVisitor<T>): T {
-    return visitor.visitVarStatement(this);
+    return visitor.visitFunctionStatement(this);
   }
 }
 
-export { Var };
+export { Func };

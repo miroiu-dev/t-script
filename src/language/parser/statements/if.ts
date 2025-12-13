@@ -1,5 +1,6 @@
-import type { StatementVisitor } from '@t-script/language/visitors';
-import type { Expression } from '../expressions';
+import type { StatementVisitor } from '@t-script/visitors';
+import type { Expression } from '@t-script/expressions';
+
 import { Statement } from './statement';
 
 class If extends Statement {

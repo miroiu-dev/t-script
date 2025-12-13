@@ -1,21 +1,10 @@
-import { Binary } from './binary';
-import { Grouping } from './grouping';
-import { Literal } from './literal';
-import { Unary } from './unary';
-import { Ternary } from './ternary';
-import { Expression } from './expression';
-import { Variable } from './variable';
-import { Assignment } from './assignment';
-import { Logical } from './logical';
-
-export {
-  Binary,
-  Grouping,
-  Literal,
-  Unary,
-  Ternary,
-  Expression,
-  Variable,
-  Assignment,
-  Logical,
-};
+export { Binary } from './binary';
+export { Grouping } from './grouping';
+export { Literal } from './literal';
+export { Unary } from './unary';
+export { Ternary } from './ternary';
+export { Expression } from './expression';
+export { Variable } from './variable';
+export { Assignment } from './assignment';
+export { Logical } from './logical';
+export { Call } from './call';

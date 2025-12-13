@@ -7,7 +7,8 @@ import type {
   Variable,
   Assignment,
   Logical,
-} from '@t-script/language/parser/expressions';
+  Call,
+} from '@t-script/expressions';
 
 interface ExpressionVisitor<T> {
   visitBinaryExpression(expression: Binary): T;
@@ -18,6 +19,7 @@ interface ExpressionVisitor<T> {
   visitVariableExpression(expression: Variable): T;
   visitAssignmentExpression(expression: Assignment): T;
   visitLogicalExpression(expression: Logical): T;
+  visitCallExpression(expression: Call): T;
 }
 
 export type { ExpressionVisitor };

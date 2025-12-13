@@ -36,7 +36,19 @@
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     "paths": {
-      "@t-script/*": ["./src/*"]
+      "@t-script/*": ["./src/*"],
+      "@t-script/parser": ["./src/language/parser"],
+      "@t-script/parser/*": ["./src/language/parser/*"],
+      "@t-script/interpreter": ["./src/language/interpreter"],
+      "@t-script/interpreter/*": ["./src/language/interpreter/*"],
+      "@t-script/lexer": ["./src/language/lexer"],
+      "@t-script/lexer/*": ["./src/language/lexer/*"],
+      "@t-script/expressions": ["./src/language/parser/expressions"],
+      "@t-script/expressions/*": ["./src/language/parser/expressions/*"],
+      "@t-script/statements": ["./src/language/parser/statements"],
+      "@t-script/statements/*": ["./src/language/parser/statements/*"],
+      "@t-script/visitors": ["./src/language/visitors"],
+      "@t-script/visitors/*": ["./src/language/visitors/*"]
     }
   }
 }

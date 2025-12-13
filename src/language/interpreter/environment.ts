@@ -1,4 +1,5 @@
 import type { Token } from '../lexer';
+
 import { RuntimeError } from './errors';
 
 class Environment {

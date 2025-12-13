@@ -1,4 +1,5 @@
-import type { StatementVisitor } from '@t-script/language/visitors';
+import type { StatementVisitor } from '@t-script/visitors';
+
 import { Statement } from './statement';
 
 class Block extends Statement {

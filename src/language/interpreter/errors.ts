@@ -1,8 +1,8 @@
-import type { Token } from '@t-script/language/lexer';
+import type { Token } from '@t-script/lexer';
 
 class RuntimeError extends Error {
   constructor(
-    public token: Token,
+    public token: Token | null,
     message: string
   ) {
     super(message);
@@ -10,4 +10,12 @@ class RuntimeError extends Error {
   }
 }
 
-export { RuntimeError };
+class Return extends RuntimeError {
+  constructor(public value: unknown) {
+    super(null, '');
+    this.name = 'Return';
+    this.value = value;
+  }
+}
+
+export { RuntimeError, Return };

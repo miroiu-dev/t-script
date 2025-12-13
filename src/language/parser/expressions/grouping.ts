@@ -1,4 +1,5 @@
-import type { ExpressionVisitor } from '../../visitors/expressionVisitor';
+import type { ExpressionVisitor } from '@t-script/visitors';
+
 import { Expression } from './expression';
 
 class Grouping extends Expression {
