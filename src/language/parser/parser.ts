@@ -6,28 +6,76 @@ import {
   Literal,
   Ternary,
   Unary,
+  Variable,
   type Expression,
 } from './expressions';
+import { ExpressionStatement, Var, type Statement } from './statements';
+import { Assignment } from './expressions/assignment';
 
 class Parser {
   private current = 0;
   constructor(private tokens: Token[]) {}
 
-  public parse(): Expression | null {
-    try {
-      return this.expression();
-    } catch (error) {
-      if (error instanceof ParseError) {
-        console.error(error.message);
-        return null;
-      }
+  public parse(): Statement[] {
+    const statements: Statement[] = [];
 
-      return null;
+    while (!this.isAtEnd()) {
+      statements.push(this.declaration());
     }
+
+    return statements;
+  }
+
+  private declaration(): Statement {
+    if (this.match(TokenType.VAR)) {
+      return this.varDeclaration();
+    }
+
+    return this.statement();
+  }
+
+  private varDeclaration(): Statement {
+    const name = this.consume(TokenType.IDENTIFIER, 'Expect variable name.');
+    let initializer: Expression | null = null;
+
+    if (this.match(TokenType.EQUAL)) {
+      initializer = this.expression();
+    }
+
+    this.consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+    return new Var(name, initializer);
+  }
+
+  private statement(): Statement {
+    return this.expressionStatement();
+  }
+
+  private expressionStatement(): Statement {
+    const expr = this.expression();
+    this.consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+    return new ExpressionStatement(expr);
   }
 
   private expression(): Expression {
-    return this.ternary();
+    return this.assignment();
+  }
+
+  private assignment(): Expression {
+    const expression = this.ternary();
+
+    if (this.match(TokenType.EQUAL)) {
+      const equals = this.previous();
+      const value = this.assignment();
+
+      if (expression instanceof Variable) {
+        const name = expression.name;
+        return new Assignment(name, value);
+      }
+
+      throw new Error('Invalid assignment target.');
+    }
+
+    return expression;
   }
 
   private ternary(): Expression {
@@ -131,6 +179,10 @@ class Parser {
     if (this.match(TokenType.FALSE)) return new Literal(false);
     if (this.match(TokenType.TRUE)) return new Literal(true);
     if (this.match(TokenType.NULL)) return new Literal(null);
+    if (this.match(TokenType.IDENTIFIER)) {
+      const previousToken = this.previous();
+      return new Variable(previousToken);
+    }
 
     if (this.match(TokenType.NUMBER, TokenType.STRING)) {
       const previousToken = this.previous();

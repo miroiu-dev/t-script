@@ -1,4 +1,4 @@
-import type { Visitor } from '@t-script/language/visitor';
+import type { ExpressionVisitor } from '@t-script/language/visitors/expressionVisitor';
 import { Expression } from './expression';
 
 class Ternary extends Expression {
@@ -10,7 +10,7 @@ class Ternary extends Expression {
     super();
   }
 
-  override accept<T>(visitor: Visitor<T>): T {
+  override accept<T>(visitor: ExpressionVisitor<T>): T {
     return visitor.visitTernaryExpression(this);
   }
 }

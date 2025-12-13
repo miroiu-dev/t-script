@@ -6,10 +6,10 @@ import {
   Ternary,
   Unary,
 } from './expressions';
-import type { Visitor } from '../visitor';
+import type { ExpressionVisitor } from '../visitors/expressionVisitor';
 
-class AstPrinter implements Visitor<string> {
-  visitTernaryExpression(expression: Ternary): string {
+class AstPrinter implements ExpressionVisitor<string> {
+  public visitTernaryExpression(expression: Ternary): string {
     return this.parenthesize(
       '?:',
       expression.condition,
@@ -17,11 +17,11 @@ class AstPrinter implements Visitor<string> {
       expression.elseBranch
     );
   }
-  print(expression: Expression): string {
+  public print(expression: Expression): string {
     return expression.accept(this);
   }
 
-  visitBinaryExpression(expression: Binary): string {
+  public visitBinaryExpression(expression: Binary): string {
     return this.parenthesize(
       expression.operator.text,
       expression.left,
@@ -29,11 +29,11 @@ class AstPrinter implements Visitor<string> {
     );
   }
 
-  visitGroupingExpression(expression: Grouping): string {
+  public visitGroupingExpression(expression: Grouping): string {
     return this.parenthesize('group', expression.expression);
   }
 
-  visitLiteralExpression(expression: Literal): string {
+  public visitLiteralExpression(expression: Literal): string {
     if (expression.value === null || expression.value === undefined) {
       return 'null';
     }
@@ -41,7 +41,7 @@ class AstPrinter implements Visitor<string> {
     return expression.value.toString();
   }
 
-  visitUnaryExpression(expression: Unary): string {
+  public visitUnaryExpression(expression: Unary): string {
     return this.parenthesize(expression.operator.text, expression.right);
   }
 

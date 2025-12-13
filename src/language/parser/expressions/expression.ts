@@ -1,7 +1,7 @@
-import type { Visitor } from '../../visitor';
+import type { ExpressionVisitor } from '../../visitors/expressionVisitor';
 
 abstract class Expression {
-  abstract accept<T>(visitor: Visitor<T>): T;
+  abstract accept<T>(visitor: ExpressionVisitor<T>): T;
 }
 
 export { Expression };

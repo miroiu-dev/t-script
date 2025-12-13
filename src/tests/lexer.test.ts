@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { Lexer, LexerError, TokenType } from '@t-script/language/lexer';
 
-describe('Lexer', () => {
+describe('lexer', () => {
   test('should handle white space characters', () => {
     const lexer = new Lexer('  \t  \n  +  \t  ');
     const tokens = lexer.lex();
