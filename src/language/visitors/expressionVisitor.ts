@@ -6,6 +6,7 @@ import type {
   Unary,
   Variable,
   Assignment,
+  Logical,
 } from '@t-script/language/parser/expressions';
 
 interface ExpressionVisitor<T> {
@@ -16,6 +17,7 @@ interface ExpressionVisitor<T> {
   visitTernaryExpression(expression: Ternary): T;
   visitVariableExpression(expression: Variable): T;
   visitAssignmentExpression(expression: Assignment): T;
+  visitLogicalExpression(expression: Logical): T;
 }
 
 export type { ExpressionVisitor };

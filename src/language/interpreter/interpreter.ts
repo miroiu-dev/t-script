@@ -8,15 +8,19 @@ import type {
   Expression,
   Variable,
   Assignment,
+  Logical,
 } from '@t-script/language/parser/expressions';
 import type {
   ExpressionVisitor,
   StatementVisitor,
 } from '@t-script/language/visitors';
 import type {
+  Block,
   ExpressionStatement,
+  If,
   Statement,
   Var,
+  While,
 } from '@t-script/language/parser/statements';
 import { RuntimeError } from './errors';
 import { Environment } from './environment';
@@ -61,6 +65,55 @@ class Interpreter
     }
 
     this.environment.define(statement.name.text, value);
+  }
+
+  public visitIfStatement(statement: If): void {
+    const condition = this.evaluate(statement.condition);
+
+    if (this.isTruthy(condition)) {
+      this.execute(statement.thenBranch);
+    } else if (statement.elseBranch !== null) {
+      this.execute(statement.elseBranch);
+    }
+  }
+
+  public visitBlockStatement(statement: Block): void {
+    this.executeBlock(statement.statements, new Environment(this.environment));
+  }
+
+  private executeBlock(
+    statements: Statement[],
+    environment: Environment
+  ): void {
+    const previous = this.environment;
+
+    try {
+      this.environment = environment;
+
+      for (const statement of statements) {
+        this.execute(statement);
+      }
+    } finally {
+      this.environment = previous;
+    }
+  }
+
+  public visitLogicalExpression(expression: Logical): unknown {
+    const left = this.evaluate(expression.left);
+
+    if (expression.operator.type === TokenType.OR) {
+      if (this.isTruthy(left)) return left;
+    } else {
+      if (!this.isTruthy(left)) return left;
+    }
+
+    return this.evaluate(expression.right);
+  }
+
+  public visitWhileStatement(statement: While): void {
+    while (this.isTruthy(this.evaluate(statement.condition))) {
+      this.execute(statement.body);
+    }
   }
 
   public visitBinaryExpression(expression: Binary): unknown {

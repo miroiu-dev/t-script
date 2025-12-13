@@ -2,14 +2,22 @@ import { Token, TokenType } from '@t-script/language/lexer';
 import { ParseError } from './errors';
 import {
   Binary,
+  Expression,
   Grouping,
   Literal,
+  Logical,
   Ternary,
   Unary,
   Variable,
-  type Expression,
 } from './expressions';
-import { ExpressionStatement, Var, type Statement } from './statements';
+import {
+  Block,
+  ExpressionStatement,
+  If,
+  Var,
+  While,
+  type Statement,
+} from './statements';
 import { Assignment } from './expressions/assignment';
 
 class Parser {
@@ -47,7 +55,103 @@ class Parser {
   }
 
   private statement(): Statement {
+    if (this.match(TokenType.FOR)) {
+      return this.forStatement();
+    }
+
+    if (this.match(TokenType.WHILE)) {
+      return this.whileStatement();
+    }
+
+    if (this.match(TokenType.IF)) {
+      return this.ifStatement();
+    }
+
+    if (this.match(TokenType.LEFT_BRACE)) {
+      return new Block(this.block());
+    }
+
     return this.expressionStatement();
+  }
+
+  private forStatement(): Statement {
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+    let initializer: Statement | null;
+
+    if (this.match(TokenType.SEMICOLON)) {
+      initializer = null;
+    } else if (this.match(TokenType.VAR)) {
+      initializer = this.varDeclaration();
+    } else {
+      initializer = this.expressionStatement();
+    }
+
+    let condition: Expression | null = null;
+
+    if (!this.check(TokenType.SEMICOLON)) {
+      condition = this.expression();
+    }
+
+    this.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+    let increment: Expression | null = null;
+
+    if (!this.check(TokenType.RIGHT_PAREN)) {
+      increment = this.expression();
+    }
+
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+    let body = this.statement();
+
+    if (increment !== null) {
+      body = new Block([body, new ExpressionStatement(increment)]);
+    }
+
+    if (condition === null) condition = new Literal(true);
+    body = new While(condition, body);
+
+    if (initializer !== null) {
+      body = new Block([initializer, body]);
+    }
+
+    return body;
+  }
+
+  private whileStatement(): Statement {
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+    const condition = this.expression();
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
+    const body = this.statement();
+
+    return new While(condition, body);
+  }
+
+  private ifStatement(): Statement {
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+    const condition = this.expression();
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+    const thenBranch = this.statement();
+
+    if (this.match(TokenType.ELSE)) {
+      const elseBranch = this.statement();
+
+      return new If(condition, thenBranch, elseBranch);
+    }
+
+    return new If(condition, thenBranch);
+  }
+
+  private block(): Statement[] {
+    const statements: Statement[] = [];
+
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+      statements.push(this.declaration());
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+    return statements;
   }
 
   private expressionStatement(): Statement {
@@ -79,7 +183,7 @@ class Parser {
   }
 
   private ternary(): Expression {
-    let expression = this.equality();
+    let expression = this.or();
 
     if (this.match(TokenType.QUESTION_MARK)) {
       const thenBranch = this.expression();
@@ -87,6 +191,32 @@ class Parser {
       const elseBranch = this.ternary();
 
       expression = new Ternary(expression, thenBranch, elseBranch);
+    }
+
+    return expression;
+  }
+
+  private or(): Expression {
+    let expression = this.and();
+
+    while (this.match(TokenType.OR)) {
+      const operator = this.previous();
+      const right = this.and();
+
+      expression = new Logical(expression, operator, right);
+    }
+
+    return expression;
+  }
+
+  private and(): Expression {
+    let expression = this.equality();
+
+    while (this.match(TokenType.AND)) {
+      const operator = this.previous();
+      const right = this.equality();
+
+      expression = new Logical(expression, operator, right);
     }
 
     return expression;

@@ -2,11 +2,20 @@ import type { Token } from '../lexer';
 import { RuntimeError } from './errors';
 
 class Environment {
+  public enclosing: Environment | null = null;
   private values = new Map<string, unknown>();
+
+  constructor(enclosing: Environment | null = null) {
+    this.enclosing = enclosing;
+  }
 
   public get(name: Token): unknown {
     if (this.values.has(name.text)) {
       return this.values.get(name.text);
+    }
+
+    if (this.enclosing !== null) {
+      return this.enclosing.get(name);
     }
 
     throw new RuntimeError(name, "Undefined variable '" + name.text + "'.");
@@ -15,6 +24,11 @@ class Environment {
   public assign(name: Token, value: unknown): void {
     if (this.values.has(name.text)) {
       this.values.set(name.text, value);
+      return;
+    }
+
+    if (this.enclosing !== null) {
+      this.enclosing.assign(name, value);
       return;
     }
 
