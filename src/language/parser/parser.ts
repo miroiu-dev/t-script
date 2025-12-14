@@ -1,6 +1,6 @@
-import { Token, TokenType } from '@t-script/language/lexer';
+import { Token, TokenType } from '@t-script/lexer';
 import { ParseError } from './errors';
-import { Assignment } from './expressions/assignment';
+
 import * as Stmt from '@t-script/statements';
 import * as Expr from '@t-script/expressions';
 
@@ -130,7 +130,6 @@ class Parser {
     if (!this.check(TokenType.RIGHT_PAREN)) {
       increment = this.expression();
     }
-
     this.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
 
     let body = this.statement();
@@ -198,7 +197,7 @@ class Parser {
     const expression = this.ternary();
 
     if (this.match(TokenType.EQUAL)) {
-      const equals = this.previous();
+      // const equals = this.previous();
       const value = this.assignment();
 
       if (expression instanceof Expr.Variable) {
@@ -325,6 +324,19 @@ class Parser {
   }
 
   private unary(): Expr.Expression {
+    if (this.match(TokenType.PLUS_PLUS, TokenType.MINUS_MINUS)) {
+      const operator = this.previous();
+      const right = this.unary();
+
+      if (!(right instanceof Expr.Variable)) {
+        throw new ParseError(
+          'Invalid left-hand side in prefix expression target.'
+        );
+      }
+
+      return new Expr.Prefix(right.name, operator);
+    }
+
     if (this.match(TokenType.BANG, TokenType.MINUS)) {
       const operator = this.previous();
       const right = this.unary();
@@ -332,7 +344,26 @@ class Parser {
       return new Expr.Unary(operator, right);
     }
 
-    return this.call();
+    return this.postfix();
+  }
+
+  private postfix(): Expr.Expression {
+    let expression = this.call();
+
+    if (this.match(TokenType.PLUS_PLUS, TokenType.MINUS_MINUS)) {
+      const operator = this.previous();
+
+      if (!(expression instanceof Expr.Variable)) {
+        throw new ParseError(
+          'Invalid right-hand side in postfix expression target.'
+        );
+      }
+
+      const name = expression.name;
+      expression = new Expr.Postfix(name, operator);
+    }
+
+    return expression;
   }
 
   private call(): Expr.Expression {

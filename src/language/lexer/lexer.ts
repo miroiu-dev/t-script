@@ -60,12 +60,18 @@ class Lexer {
       case ']':
         this.addToken(TokenType.RIGHT_BRACKET);
         break;
-      case '+':
-        this.addToken(TokenType.PLUS);
+      case '+': {
+        const matchesPlus = this.source.match('+');
+        this.addToken(matchesPlus ? TokenType.PLUS_PLUS : TokenType.PLUS);
+
         break;
-      case '-':
-        this.addToken(TokenType.MINUS);
+      }
+      case '-': {
+        const matchesMinus = this.source.match('-');
+        this.addToken(matchesMinus ? TokenType.MINUS_MINUS : TokenType.MINUS);
+
         break;
+      }
       case '*':
         this.addToken(TokenType.STAR);
         break;

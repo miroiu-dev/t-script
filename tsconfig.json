@@ -36,7 +36,6 @@
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     "paths": {
-      "@t-script/*": ["./src/*"],
       "@t-script/parser": ["./src/language/parser"],
       "@t-script/parser/*": ["./src/language/parser/*"],
       "@t-script/interpreter": ["./src/language/interpreter"],

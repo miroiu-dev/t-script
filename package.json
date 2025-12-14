@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "lint": "eslint"
+    "lint": "eslint",
+    "cli": "bun run src/cli.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -15,5 +16,8 @@
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2"
   }
 }

@@ -1,8 +1,8 @@
 import type { Interpreter } from './interpreter';
 
-interface Callable {
-  arity(): number;
-  call(interpreter: Interpreter, args: unknown[]): unknown;
+abstract class Callable {
+  abstract arity(): number;
+  abstract call(interpreter: Interpreter, args: unknown[]): unknown;
 }
 
-export type { Callable };
+export { Callable };

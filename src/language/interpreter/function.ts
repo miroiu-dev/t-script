@@ -1,18 +1,23 @@
-import type { Func } from '../parser/statements';
+import type { Func } from '@t-script/statements';
 import type { Callable } from './callable';
 import type { Interpreter } from './interpreter';
 
 import { Environment } from './environment';
+import { Return } from './errors';
 
 class TScriptFunction implements Callable {
-  constructor(private declaration: Func) {}
+  constructor(
+    private readonly declaration: Func,
+    private readonly closure: Environment
+  ) {}
 
   arity(): number {
     throw new Error('Method not implemented.');
   }
 
   call(interpreter: Interpreter, args: unknown[]): unknown {
-    const environment = new Environment(interpreter.globals);
+    const environment = new Environment(this.closure);
+
     for (let i = 0; i < this.declaration.params.length; i++) {
       const paramName = this.declaration.params[i];
 
@@ -24,7 +29,11 @@ class TScriptFunction implements Callable {
       environment.define(paramName.text, args[i]);
     }
 
-    interpreter.executeBlock(this.declaration.body, environment);
+    try {
+      interpreter.executeBlock(this.declaration.body, environment);
+    } catch (returnValue) {
+      return (returnValue as Return).value;
+    }
 
     return null;
   }

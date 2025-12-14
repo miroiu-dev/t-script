@@ -8,3 +8,5 @@ export { Variable } from './variable';
 export { Assignment } from './assignment';
 export { Logical } from './logical';
 export { Call } from './call';
+export { Postfix } from './postfix';
+export { Prefix } from './prefix';

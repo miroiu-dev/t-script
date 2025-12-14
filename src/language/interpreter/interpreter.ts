@@ -1,10 +1,11 @@
 import type { ExpressionVisitor, StatementVisitor } from '@t-script/visitors';
-import type { Callable } from './callable';
 
-import { Token, TokenType } from '@t-script/language/lexer';
+import { Token, TokenType } from '@t-script/lexer';
 import { RuntimeError, Return } from './errors';
 import { Environment } from './environment';
 import { TScriptFunction } from './function';
+import { Print } from './native';
+import { Callable } from './callable';
 
 import * as Stmt from '@t-script/statements';
 import * as Expr from '@t-script/expressions';
@@ -16,17 +17,7 @@ class Interpreter
   private environment = this.globals;
 
   constructor() {
-    this.globals.define('clock', {
-      arity(): number {
-        return 0;
-      },
-      call(): number {
-        return Date.now() / 1000;
-      },
-      toString(): string {
-        return '<native fn>';
-      },
-    });
+    this.globals.define('print', new Print());
   }
 
   public interpret(statements: Stmt.Statement[]): void {
@@ -101,14 +92,16 @@ class Interpreter
     const calle = this.evaluate(expression.calle);
     const args = expression.args.map(arg => this.evaluate(arg));
     const func = calle as Callable;
+    const arity = func.arity();
 
-    if (args.length !== func.arity()) {
+    if (arity >= 0 && args.length !== arity) {
       throw new RuntimeError(
         expression.paren,
         `Expected ${func.arity()} arguments but got ${args.length}.`
       );
     }
 
+    // here check for function and class;
     if (!(calle instanceof Callable)) {
       throw new RuntimeError(
         expression.paren,
@@ -117,6 +110,24 @@ class Interpreter
     }
 
     return func.call(this, args);
+  }
+
+  public visitPostfixExpression(expression: Expr.Postfix): unknown {
+    const [oldValue] = this.evaluateStep(
+      expression.variable,
+      expression.operator
+    );
+
+    return oldValue;
+  }
+
+  public visitPrefixExpression(expression: Expr.Prefix): unknown {
+    const [_, newValue] = this.evaluateStep(
+      expression.variable,
+      expression.operator
+    );
+
+    return newValue;
   }
 
   public visitReturnStatement(statement: Stmt.Return): void {
@@ -148,7 +159,7 @@ class Interpreter
   }
 
   public visitFunctionStatement(statement: Stmt.Func): void {
-    const func = new TScriptFunction(statement);
+    const func = new TScriptFunction(statement, this.environment);
 
     this.environment.define(statement.name.text, func);
   }
@@ -262,7 +273,10 @@ class Interpreter
     return a === b;
   }
 
-  private assertNumber(operator: Token, operand: unknown) {
+  private assertNumber(
+    operator: Token,
+    operand: unknown
+  ): asserts operand is number {
     if (typeof operand === 'number') return;
 
     throw new RuntimeError(operator, 'Operand must be a number.');
@@ -288,6 +302,32 @@ class Interpreter
     }
 
     return value.toString();
+  }
+
+  private evaluateStep(
+    variable: Token,
+    operator: Token
+  ): [oldValue: number, newValue: number] {
+    const value = this.environment.get(variable);
+
+    this.assertNumber(operator, value);
+
+    let newValue: number;
+
+    switch (operator.type) {
+      case TokenType.PLUS_PLUS:
+        newValue = value + 1;
+        break;
+      case TokenType.MINUS_MINUS:
+        newValue = value - 1;
+        break;
+      default:
+        throw new RuntimeError(operator, 'Unsupported postfix operator.');
+    }
+
+    this.environment.assign(variable, newValue);
+
+    return [value, newValue];
   }
 }
 

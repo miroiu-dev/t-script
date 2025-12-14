@@ -8,6 +8,8 @@ import type {
   Assignment,
   Logical,
   Call,
+  Postfix,
+  Prefix,
 } from '@t-script/expressions';
 
 interface ExpressionVisitor<T> {
@@ -20,6 +22,8 @@ interface ExpressionVisitor<T> {
   visitAssignmentExpression(expression: Assignment): T;
   visitLogicalExpression(expression: Logical): T;
   visitCallExpression(expression: Call): T;
+  visitPostfixExpression(expression: Postfix): T;
+  visitPrefixExpression(expression: Prefix): T;
 }
 
 export type { ExpressionVisitor };

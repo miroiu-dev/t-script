@@ -9,6 +9,8 @@ enum TokenType {
   STAR,
   DOT,
   PLUS,
+  PLUS_PLUS,
+  MINUS_MINUS,
   MINUS,
   SLASH,
   SEMICOLON,
