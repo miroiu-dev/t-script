@@ -1,6 +1,6 @@
+import * as Expr from '@t-script/expressions';
 import { Lexer } from '@t-script/lexer';
 import { Parser } from '@t-script/parser';
-import * as Expr from '@t-script/expressions';
 import * as Stmt from '@t-script/statements';
 import { describe, expect, test } from 'bun:test';
 

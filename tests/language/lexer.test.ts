@@ -1,4 +1,4 @@
-import { Lexer, TokenType, Token } from '@t-script/lexer';
+import { Lexer, Token, TokenType } from '@t-script/lexer';
 import { describe, expect, test } from 'bun:test';
 
 describe('Lexer', () => {

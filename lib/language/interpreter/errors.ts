@@ -18,4 +18,4 @@ class Return extends RuntimeError {
   }
 }
 
-export { RuntimeError, Return };
+export { Return, RuntimeError };

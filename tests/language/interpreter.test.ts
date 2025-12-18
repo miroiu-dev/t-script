@@ -1,6 +1,6 @@
+import { Interpreter } from '@t-script/interpreter';
 import { Lexer } from '@t-script/lexer';
 import { Parser } from '@t-script/parser';
-import { Interpreter } from '@t-script/interpreter';
 import { describe, expect, test } from 'bun:test';
 
 describe('Interpreter', () => {

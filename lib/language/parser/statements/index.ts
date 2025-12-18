@@ -1,8 +1,8 @@
-export { Statement } from './statement';
-export { Expression } from './expression';
-export { Var } from './var';
 export { Block } from './block';
-export { If } from './if';
-export { While } from './while';
+export { Expression } from './expression';
 export { Func } from './func';
+export { If } from './if';
 export { Return } from './return';
+export { Statement } from './statement';
+export { Var } from './var';
+export { While } from './while';

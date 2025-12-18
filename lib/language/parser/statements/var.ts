@@ -1,6 +1,6 @@
-import type { StatementVisitor } from '@t-script/visitors';
-import type { Token } from '@t-script/lexer';
 import type { Expression } from '@t-script/expressions';
+import type { Token } from '@t-script/lexer';
+import type { StatementVisitor } from '@t-script/visitors';
 
 import { Statement } from './statement';
 

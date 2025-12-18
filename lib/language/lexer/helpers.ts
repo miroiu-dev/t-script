@@ -29,4 +29,4 @@ function isAlphaNumeric(character: string): boolean {
   return isAlpha(character) || isDigit(character);
 }
 
-export { isNewLine, isDigit, isBackslash, isHexDigit, isAlpha, isAlphaNumeric };
+export { isAlpha, isAlphaNumeric, isBackslash, isDigit, isHexDigit, isNewLine };

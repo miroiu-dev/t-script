@@ -1,14 +1,14 @@
 import type { ExpressionVisitor, StatementVisitor } from '@t-script/visitors';
 
 import { Token, TokenType } from '@t-script/lexer';
-import { RuntimeError, Return } from './errors';
+import { Callable } from './callable';
 import { Environment } from './environment';
+import { Return, RuntimeError } from './errors';
 import { TScriptFunction } from './function';
 import { Print } from './native';
-import { Callable } from './callable';
 
-import * as Stmt from '@t-script/statements';
 import * as Expr from '@t-script/expressions';
+import * as Stmt from '@t-script/statements';
 
 class Interpreter
   implements ExpressionVisitor<unknown>, StatementVisitor<void>

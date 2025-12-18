@@ -1,11 +1,11 @@
 import type {
   Block,
   Expression,
+  Func,
   If,
+  Return,
   Var,
   While,
-  Func,
-  Return,
 } from '@t-script/statements';
 
 interface StatementVisitor<T> {

@@ -1,7 +1,7 @@
 import type { StatementVisitor } from '@t-script/visitors';
 
-import { Statement } from './statement';
 import { Expression as Expr } from '@t-script/expressions';
+import { Statement } from './statement';
 
 class Expression extends Statement {
   constructor(public expression: Expr) {

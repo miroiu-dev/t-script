@@ -1,4 +1,4 @@
-export { Lexer } from './lexer';
 export { LexerError } from './errors';
-export { TokenType } from './tokenType';
+export { Lexer } from './lexer';
 export { Token } from './token';
+export { TokenType } from './tokenType';

@@ -1,8 +1,8 @@
 import { Token, TokenType } from '@t-script/lexer';
 import { ParseError } from './errors';
 
-import * as Stmt from '@t-script/statements';
 import * as Expr from '@t-script/expressions';
+import * as Stmt from '@t-script/statements';
 
 class Parser {
   private current = 0;

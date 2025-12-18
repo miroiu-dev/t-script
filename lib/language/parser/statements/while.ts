@@ -1,5 +1,5 @@
-import type { StatementVisitor } from '@t-script/visitors';
 import type { Expression } from '@t-script/expressions';
+import type { StatementVisitor } from '@t-script/visitors';
 import { Statement } from './statement';
 
 class While extends Statement {

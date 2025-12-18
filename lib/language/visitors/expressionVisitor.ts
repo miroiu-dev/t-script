@@ -1,15 +1,15 @@
 import type {
+  Assignment,
   Binary,
+  Call,
   Grouping,
   Literal,
+  Logical,
+  Postfix,
+  Prefix,
   Ternary,
   Unary,
   Variable,
-  Assignment,
-  Logical,
-  Call,
-  Postfix,
-  Prefix,
 } from '@t-script/expressions';
 
 interface ExpressionVisitor<T> {
