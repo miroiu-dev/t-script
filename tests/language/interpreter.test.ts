@@ -6,7 +6,7 @@ import { describe, expect, test } from 'bun:test';
 describe('Interpreter', () => {
   function interpret(code: string): void {
     const lexer = new Lexer(code);
-    const tokens = lexer.lex();
+    const tokens = lexer.tokenize();
     const parser = new Parser(tokens);
     const statements = parser.parse();
     const interpreter = new Interpreter();

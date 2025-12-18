@@ -4,7 +4,7 @@ import { describe, expect, test } from 'bun:test';
 describe('Lexer', () => {
   function lex(code: string): Token[] {
     const lexer = new Lexer(code);
-    return lexer.lex();
+    return lexer.tokenize();
   }
 
   describe('Single Character Tokens', () => {

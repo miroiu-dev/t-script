@@ -7,13 +7,11 @@
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
-
     // Bundler mode
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-
     // Best practices
     "strict": true,
     "skipLibCheck": true,
@@ -36,18 +34,34 @@
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     "paths": {
-      "@t-script/parser": ["./src/language/parser"],
-      "@t-script/parser/*": ["./src/language/parser/*"],
-      "@t-script/interpreter": ["./src/language/interpreter"],
-      "@t-script/interpreter/*": ["./src/language/interpreter/*"],
-      "@t-script/lexer": ["./src/language/lexer"],
-      "@t-script/lexer/*": ["./src/language/lexer/*"],
-      "@t-script/expressions": ["./src/language/parser/expressions"],
-      "@t-script/expressions/*": ["./src/language/parser/expressions/*"],
-      "@t-script/statements": ["./src/language/parser/statements"],
-      "@t-script/statements/*": ["./src/language/parser/statements/*"],
-      "@t-script/visitors": ["./src/language/visitors"],
-      "@t-script/visitors/*": ["./src/language/visitors/*"]
-    }
-  }
+      "@/*": ["./*"],
+      "@t-script/parser": ["./lib/language/parser"],
+      "@t-script/parser/*": ["./lib/language/parser/*"],
+      "@t-script/interpreter": ["./lib/language/interpreter"],
+      "@t-script/interpreter/*": ["./lib/language/interpreter/*"],
+      "@t-script/lexer": ["./lib/language/lexer"],
+      "@t-script/lexer/*": ["./lib/language/lexer/*"],
+      "@t-script/expressions": ["./lib/language/parser/expressions"],
+      "@t-script/expressions/*": ["./lib/language/parser/expressions/*"],
+      "@t-script/statements": ["./lib/language/parser/statements"],
+      "@t-script/statements/*": ["./lib/language/parser/statements/*"],
+      "@t-script/visitors": ["./lib/language/visitors"],
+      "@t-script/visitors/*": ["./lib/language/visitors/*"]
+    },
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
 }

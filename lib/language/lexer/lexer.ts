@@ -27,7 +27,7 @@ class Lexer {
    * Lexes the input source code and returns an array of tokens.
    * @return {Token[]} An array of tokens representing the lexed source code.
    */
-  public lex(): Token[] {
+  public tokenize(): Token[] {
     while (!this.source.eof()) {
       this.start = this.source.position;
       this.scanToken();

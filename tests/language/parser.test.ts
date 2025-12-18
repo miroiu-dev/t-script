@@ -7,7 +7,7 @@ import { describe, expect, test } from 'bun:test';
 describe('Parser', () => {
   function parse(code: string): Stmt.Statement[] {
     const lexer = new Lexer(code);
-    const tokens = lexer.lex();
+    const tokens = lexer.tokenize();
     const parser = new Parser(tokens);
     return parser.parse();
   }
